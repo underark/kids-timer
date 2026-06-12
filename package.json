@@ -1,0 +1,23 @@
+{
+  "name": "kids-timer",
+  "version": "1.0.0",
+  "description": "A timer to help my son manage his routines every day",
+  "main": "js.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/underark/kids-timer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/underark/kids-timer/issues"
+  },
+  "homepage": "https://github.com/underark/kids-timer#readme",
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
