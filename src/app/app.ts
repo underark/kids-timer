@@ -4,20 +4,45 @@ type ActiveTimer =
     | { running: true; value: Timer }
     | { running: false; value: null }
 
+type View =
+    | "main"
+    | "timer"
+
 class App {
     timer: ActiveTimer;
     lastTimestamp: number;
+    currentView: View;
 
     constructor() {
         this.timer = { running: false, value: null };
         this.lastTimestamp = 0;
+        this.currentView = "main";
     }
 
     i_startTimer(end: string) {
+        this._i_createTimer(end);
+        const loop = this._createLoop();
+        requestAnimationFrame(loop);
+    }
+
+    // There is technically a bug here where the last scheduled animation loop will execute without being cancelled
+    i_cancelTimer() {
+        this.timer = { running: false, value: null };
+        this.lastTimestamp = 0;
+    }
+
+    _diffLastTimestamp(timestamp: DOMHighResTimeStamp) {
+        return timestamp - this.lastTimestamp;
+    }
+
+    _i_createTimer(end: string) {
         const timer = new Timer(new Date(), end);
         this.timer = { running: true, value: timer };
-        const i_render = (timestamp: number) => {
-            if (this.timer.running === true && this.diffLastTimestamp(timestamp) >= 16) {
+    }
+
+    _createLoop() {
+        const i_loop = (timestamp: number) => {
+            if (this.timer.running === true && this._diffLastTimestamp(timestamp) >= 16) {
                 const div = document.querySelector("#progress");
                 const elapsed = this.timer.value.calculateElapsed();
                 div!.textContent = elapsed.toString();
@@ -27,18 +52,9 @@ class App {
                 }
                 this.lastTimestamp = timestamp;
             }
-            requestAnimationFrame(i_render);
+            requestAnimationFrame(i_loop);
         };
-        requestAnimationFrame(i_render);
-    }
-
-    i_cancelTimer() {
-        this.timer = { running: false, value: null };
-        this.lastTimestamp = 0;
-    }
-
-    diffLastTimestamp(timestamp: DOMHighResTimeStamp) {
-        return timestamp - this.lastTimestamp;
+        return i_loop;
     }
 }
 
