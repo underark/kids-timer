@@ -1,28 +1,50 @@
 import { Timer } from "../timer/timer.js";
+import { newLayoutManager, type Layout } from "../layouts/layouts.js";
 
 type ActiveTimer =
     | { running: true; value: Timer }
     | { running: false; value: null }
 
-type View =
-    | "main"
-    | "timer"
+interface Task {
+    name: string;
+    image: string;
+}
+
+interface LayoutManager {
+    getLayout(name: Layout): HTMLDivElement | null;
+}
+
 
 class App {
+    tasks: Task[];
     timer: ActiveTimer;
     lastTimestamp: number;
-    currentView: View;
+    layoutManager: LayoutManager;
 
+    // This constructor is to be used in conjunction with the static method 'create'
     constructor() {
+        this.tasks = createTasks();
         this.timer = { running: false, value: null };
         this.lastTimestamp = 0;
-        this.currentView = "main";
+        this.layoutManager = newLayoutManager(this.tasks);
+    }
+
+    i_changeLayout(name: Layout) {
+        const body = document.querySelector("body");
+        const layout = this.layoutManager.getLayout(name);
+        i_clearBody(body!);
+        body?.append(layout!);
     }
 
     i_startTimer(end: string) {
         this._i_createTimer(end);
         const loop = this._createLoop();
         requestAnimationFrame(loop);
+    }
+
+    _i_createTimer(end: string) {
+        const timer = new Timer(new Date(), end);
+        this.timer = { running: true, value: timer };
     }
 
     // There is technically a bug here where the last scheduled animation loop will execute without being cancelled
@@ -33,11 +55,6 @@ class App {
 
     _diffLastTimestamp(timestamp: DOMHighResTimeStamp) {
         return timestamp - this.lastTimestamp;
-    }
-
-    _i_createTimer(end: string) {
-        const timer = new Timer(new Date(), end);
-        this.timer = { running: true, value: timer };
     }
 
     _createLoop() {
@@ -58,4 +75,17 @@ class App {
     }
 }
 
+function createTasks(): Array<Task> {
+    return [
+        { name: "brush teeth", image: "" },
+    ]
+}
+
+function i_clearBody(body: HTMLBodyElement) {
+    while (body.hasChildNodes()) {
+        body.removeChild(body.lastChild!);
+    }
+}
+
 export { App };
+export type { Task };

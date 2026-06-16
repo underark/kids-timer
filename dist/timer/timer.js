@@ -1,4 +1,5 @@
 class Timer {
+    // TODO: Include some defensive checks against past times and 0-length durations
     constructor(date, time) {
         const end = getDateFromTime(date, time);
         const duration = getTimeDiff(date, end);

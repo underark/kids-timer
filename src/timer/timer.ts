@@ -4,6 +4,7 @@ class Timer {
     start: Date;
     duration: Duration;
 
+    // TODO: Include some defensive checks against past times and 0-length durations
     constructor(date: Date, time: string) {
         const end = getDateFromTime(date, time);
         const duration = getTimeDiff(date, end);
