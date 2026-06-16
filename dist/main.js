@@ -3,14 +3,6 @@ import { App } from "./app/app.js";
 const app = new App();
 console.log(app);
 document.addEventListener("DOMContentLoaded", () => {
-    app.i_changeLayout("main");
-    const form = document.querySelector("form");
-    form?.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const data = new FormData(form);
-        app.i_changeLayout("timer");
-        const time = data.get("time")?.toString();
-        app.i_startTimer(time);
-    });
+    app.i_start();
 });
 //# sourceMappingURL=main.js.map
