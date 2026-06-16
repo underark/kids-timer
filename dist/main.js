@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     form?.addEventListener("submit", (e) => {
         e.preventDefault();
         const data = new FormData(form);
+        app.i_changeLayout("timer");
         const time = data.get("time")?.toString();
         app.i_startTimer(time);
     });

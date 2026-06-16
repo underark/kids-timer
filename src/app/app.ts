@@ -11,7 +11,7 @@ interface Task {
 }
 
 interface LayoutManager {
-    getLayout(name: Layout): HTMLDivElement | null;
+    getLayout(name: Layout): HTMLDivElement | undefined;
 }
 
 
