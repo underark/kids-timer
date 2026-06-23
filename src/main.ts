@@ -5,6 +5,6 @@ const app = new App();
 console.log(app);
 
 document.addEventListener("DOMContentLoaded", () => {
-    app.i_start();
+    app.start();
 });
 

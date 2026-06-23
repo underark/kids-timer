@@ -1,13 +1,17 @@
-import { newBehaviorManager } from "../behavior/behavior.js";
 import { createInput, createTaskCard } from "./helpers.js";
-const newLayoutManager = (tasks) => {
+// TODO: Move this to a class?
+const newLayoutManager = (dispatch, tasks) => {
     const cards = tasks.map((t) => createTaskCard(t));
-    const behavior = newBehaviorManager();
     const createMainForm = () => {
         const form = document.createElement("form");
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const data = new FormData(form);
+            const time = data.get("time");
+            dispatch("start_timer", time?.toString());
+        });
         form.method = "get";
         form.action = "";
-        behavior.initForm(form, timer());
         const time = createInput("time", "time", "time");
         const submit = createInput("submit", "submit", "submit");
         form.append(time, submit);
@@ -23,14 +27,19 @@ const newLayoutManager = (tasks) => {
         const div = document.createElement("div");
         const progress = document.createElement("div");
         progress.id = "progress";
-        div.append(progress);
+        const stop = document.createElement("button");
+        stop.textContent = "Stop timer";
+        div.append(progress, stop);
         return div;
     };
-    const getMain = () => {
-        return main();
+    const getLayouts = () => {
+        return new Map([
+            ["main", main()],
+            ["timer", timer()],
+        ]);
     };
     return {
-        getMain,
+        getLayouts,
     };
 };
 export { newLayoutManager };
