@@ -5,23 +5,42 @@ class App {
     // TODO: Consider moving this to a function factory to avoid using bind()
     constructor() {
         this.tasks = createTasks();
-        this.layouts = newLayoutManager(this._execute.bind(this), this.tasks);
+        this.layouts = newLayoutManager(this.execute.bind(this), this.tasks);
         this.render = new Render(this.layouts.getLayouts());
         this.backend = new TimerBackend();
+        this.lastTimestamp = 0;
     }
-    _execute(message, end) {
-        if (end !== undefined) {
-            this.backend.dispatch(message, end);
-        }
-        else {
-            this.backend.dispatch(message);
-        }
+    execute(message) {
+        this.backend.update(message);
         const state = this.backend.getState();
-        this.render.render(state);
+        this.render.renderLayout(state);
+        this._dispatch(state);
+    }
+    _dispatch(state) {
+        switch (state.state) {
+            case "timer":
+                requestAnimationFrame(this._loop);
+                return;
+        }
     }
     start() {
         const state = this.backend.getState();
-        this.render.render(state);
+        this.render.renderLayout(state);
+    }
+    _loop(timestamp) {
+        const state = this.backend.getState();
+        if (state.state === "timer" && this._diffLastTimestamp(timestamp) >= 16) {
+            if (state.progress >= 100) {
+                this.backend.update({ msg: "end_timer" });
+                return;
+            }
+            this.render.renderProgress(state.progress);
+            this.lastTimestamp = timestamp;
+            requestAnimationFrame(this._loop);
+        }
+    }
+    _diffLastTimestamp(timestamp) {
+        return timestamp - this.lastTimestamp;
     }
 }
 function createTasks() {

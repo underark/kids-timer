@@ -9,25 +9,21 @@ type ActiveTimer =
 
 class TimerBackend {
     timer: ActiveTimer;
-    lastTimestamp: number;
     state: Layout;
 
     constructor() {
         this.timer = { running: false, value: null };
-        this.lastTimestamp = 0;
         this.state = "main";
     }
 
-    dispatch(message: Message) {
+    update(message: Message) {
         switch (message.msg) {
             case "start_timer":
                 this._startTimer(message.end);
-                this.state = "timer";
                 return;
             case "end_timer":
                 if (this.state == "timer") {
                     this._cancelTimer();
-                    this.state = "main";
                 }
                 return;
         }
@@ -36,46 +32,21 @@ class TimerBackend {
     getState(): AppState {
         return {
             state: this.state,
+            // TODO: Consider moving this to a discriminated union to get undefined safety on  progress field
+            progress: this.timer.value?.calculateElapsed()!,
         }
     }
 
     _startTimer(end: string) {
-        this._createTimer(end);
-        const loop = this._createLoop();
-        requestAnimationFrame(loop);
-    }
-
-    _createTimer(end: string) {
         const t = new Timer(new Date(), end);
         this.timer = { running: true, value: t };
+        this.state = "timer";
     }
 
     // There is technically a bug here where the last scheduled animation loop will execute without being cancelled
     _cancelTimer() {
         this.timer = { running: false, value: null };
-        this.lastTimestamp = 0;
-    }
-
-    _diffLastTimestamp(timestamp: DOMHighResTimeStamp) {
-        return timestamp - this.lastTimestamp;
-    }
-
-    _createLoop() {
-        const i_loop = (timestamp: number) => {
-            if (this.timer.running === true && this._diffLastTimestamp(timestamp) >= 16) {
-                // TODO: Find a way to inject render method in here
-                const div = document.querySelector("#progress");
-                const elapsed = this.timer.value.calculateElapsed();
-                div!.textContent = elapsed.toString();
-                if (elapsed >= 100) {
-                    this._cancelTimer();
-                    return;
-                }
-                this.lastTimestamp = timestamp;
-            }
-            requestAnimationFrame(i_loop);
-        };
-        return i_loop;
+        this.state = "main";
     }
 }
 

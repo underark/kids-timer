@@ -1,6 +1,6 @@
 import type { Layout } from "../layouts/layouts.js";
 
-interface AppState { state: Layout }
+interface AppState { state: Layout, progress: number }
 
 class Render {
     layouts: Map<Layout, HTMLDivElement>;
@@ -9,9 +9,14 @@ class Render {
         this.layouts = layouts;
     }
 
-    render(state: AppState) {
+    renderLayout(state: AppState) {
         clearBody();
         this._appendLayout(state.state);
+    }
+
+    renderProgress(progress: number) {
+        const div = document.querySelector("#progress");
+        div!.textContent = progress.toString();
     }
 
     _appendLayout(state: Layout) {
