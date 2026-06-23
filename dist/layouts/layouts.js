@@ -29,6 +29,9 @@ const newLayoutManager = (dispatch, tasks) => {
         progress.id = "progress";
         const stop = document.createElement("button");
         stop.textContent = "Stop timer";
+        stop.addEventListener("click", () => {
+            dispatch({ msg: "end_timer" });
+        });
         div.append(progress, stop);
         return div;
     };

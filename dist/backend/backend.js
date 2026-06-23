@@ -11,6 +11,12 @@ class TimerBackend {
                 this._startTimer(message.end);
                 this.state = "timer";
                 return;
+            case "end_timer":
+                if (this.state == "timer") {
+                    this._cancelTimer();
+                    this.state = "main";
+                }
+                return;
         }
     }
     getState() {
@@ -38,6 +44,7 @@ class TimerBackend {
     _createLoop() {
         const i_loop = (timestamp) => {
             if (this.timer.running === true && this._diffLastTimestamp(timestamp) >= 16) {
+                // TODO: Find a way to inject render method in here
                 const div = document.querySelector("#progress");
                 const elapsed = this.timer.value.calculateElapsed();
                 div.textContent = elapsed.toString();

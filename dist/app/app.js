@@ -6,8 +6,8 @@ class App {
     constructor() {
         this.tasks = createTasks();
         this.layouts = newLayoutManager(this._execute.bind(this), this.tasks);
-        this.backend = new TimerBackend();
         this.render = new Render(this.layouts.getLayouts());
+        this.backend = new TimerBackend();
     }
     _execute(message, end) {
         if (end !== undefined) {

@@ -5,6 +5,7 @@ import { Render, type AppState } from "../render/render.js";
 type Task = { name: string; image: string };
 type Message =
     | { msg: "start_timer", end: string }
+    | { msg: "end_timer" }
 
 interface LayoutManager {
     getLayouts(): Map<Layout, HTMLDivElement>;
@@ -29,8 +30,8 @@ class App {
     constructor() {
         this.tasks = createTasks();
         this.layouts = newLayoutManager(this._execute.bind(this), this.tasks);
-        this.backend = new TimerBackend();
         this.render = new Render(this.layouts.getLayouts());
+        this.backend = new TimerBackend();
     }
 
     _execute(message: Message): void;
