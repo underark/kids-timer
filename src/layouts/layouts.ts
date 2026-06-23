@@ -7,7 +7,6 @@ type Layout =
 
 type DispatchFunction = {
     (message: Message): void;
-    (message: Message, end?: string): void;
 }
 
 // TODO: Move this to a class?
@@ -20,7 +19,7 @@ const newLayoutManager = (dispatch: DispatchFunction, tasks: Task[]) => {
             e.preventDefault();
             const data = new FormData(form);
             const time = data.get("time");
-            dispatch("start_timer", time?.toString()!);
+            dispatch({ msg: "start_timer", end: time?.toString()! });
         });
         form.method = "get";
         form.action = "";

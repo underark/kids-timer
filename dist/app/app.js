@@ -2,7 +2,7 @@ import { newLayoutManager } from "../layouts/layouts.js";
 import { TimerBackend } from "../backend/backend.js";
 import { Render } from "../render/render.js";
 class App {
-    // This constructor is to be used in conjunction with the static method 'create'
+    // TODO: Consider moving this to a function factory to avoid using bind()
     constructor() {
         this.tasks = createTasks();
         this.layouts = newLayoutManager(this._execute.bind(this), this.tasks);

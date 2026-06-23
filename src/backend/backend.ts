@@ -18,17 +18,12 @@ class TimerBackend {
         this.state = "main";
     }
 
-    dispatch(message: Message): void;
-    dispatch(message: Message, end: string): void;
-    dispatch(message: Message, end?: string) {
-        switch (message) {
+    dispatch(message: Message) {
+        switch (message.msg) {
             case "start_timer":
-                this._startTimer(end!);
+                this._startTimer(message.end);
                 this.state = "timer";
                 return;
-            default:
-                const _: never = message;
-                throw new Error(`Unhandled case: ${message}`);
         }
     }
 

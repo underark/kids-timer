@@ -4,7 +4,7 @@ import { Render, type AppState } from "../render/render.js";
 
 type Task = { name: string; image: string };
 type Message =
-    | "start_timer"
+    | { msg: "start_timer", end: string }
 
 interface LayoutManager {
     getLayouts(): Map<Layout, HTMLDivElement>;
@@ -25,7 +25,7 @@ class App {
     backend: Backend;
     render: Renderer;
 
-    // This constructor is to be used in conjunction with the static method 'create'
+    // TODO: Consider moving this to a function factory to avoid using bind()
     constructor() {
         this.tasks = createTasks();
         this.layouts = newLayoutManager(this._execute.bind(this), this.tasks);

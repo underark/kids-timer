@@ -8,7 +8,7 @@ const newLayoutManager = (dispatch, tasks) => {
             e.preventDefault();
             const data = new FormData(form);
             const time = data.get("time");
-            dispatch("start_timer", time?.toString());
+            dispatch({ msg: "start_timer", end: time?.toString() });
         });
         form.method = "get";
         form.action = "";

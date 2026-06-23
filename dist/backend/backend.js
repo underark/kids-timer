@@ -5,15 +5,12 @@ class TimerBackend {
         this.lastTimestamp = 0;
         this.state = "main";
     }
-    dispatch(message, end) {
-        switch (message) {
+    dispatch(message) {
+        switch (message.msg) {
             case "start_timer":
-                this._startTimer(end);
+                this._startTimer(message.end);
                 this.state = "timer";
                 return;
-            default:
-                const _ = message;
-                throw new Error(`Unhandled case: ${message}`);
         }
     }
     getState() {
